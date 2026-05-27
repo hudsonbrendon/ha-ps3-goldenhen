@@ -26,7 +26,7 @@ async def _setup(hass, status: PS3Status) -> MockConfigEntry:
 @pytest.mark.asyncio
 async def test_online_true(hass):
     await _setup(hass, PS3Status(online=True))
-    state = hass.states.get("binary_sensor.ps3_connectivity")
+    state = hass.states.get("binary_sensor.ps3_online")
     assert state is not None
     assert state.state == "on"
 
@@ -34,5 +34,5 @@ async def test_online_true(hass):
 @pytest.mark.asyncio
 async def test_online_false(hass):
     await _setup(hass, PS3Status(online=False))
-    state = hass.states.get("binary_sensor.ps3_connectivity")
+    state = hass.states.get("binary_sensor.ps3_online")
     assert state.state == "off"

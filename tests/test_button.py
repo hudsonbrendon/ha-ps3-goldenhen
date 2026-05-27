@@ -26,11 +26,10 @@ async def test_shutdown_button_calls_command(hass):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     coordinator.client.async_command = AsyncMock()
 
-    # shutdown has device_class="restart" -> entity_id is button.ps3_restart (no translations)
     await hass.services.async_call(
         "button",
         SERVICE_PRESS,
-        {ATTR_ENTITY_ID: "button.ps3_restart"},
+        {ATTR_ENTITY_ID: "button.ps3_shutdown"},
         blocking=True,
     )
     coordinator.client.async_command.assert_awaited_once_with(CMD_SHUTDOWN)

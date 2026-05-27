@@ -1,0 +1,56 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "PS3 GoldenHEN",
+        "description": "Connect to webMAN MOD running on your jailbroken PS3.",
+        "data": {
+          "name": "Name",
+          "host": "Host (IP address)",
+          "port": "Port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach webMAN MOD. Check the IP, that the PS3 is on, and that webMAN MOD is running."
+    },
+    "abort": {
+      "already_configured": "This PS3 is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "data": { "scan_interval": "Update interval (seconds)" }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "online": { "name": "Online" }
+    },
+    "sensor": {
+      "cpu_temp": { "name": "CPU temperature" },
+      "rsx_temp": { "name": "RSX temperature" },
+      "fan_speed": { "name": "Fan speed" },
+      "free_memory": { "name": "Free memory" },
+      "firmware": { "name": "Firmware" },
+      "game_title": { "name": "Current game" }
+    },
+    "switch": {
+      "fan_auto": { "name": "Fan auto" }
+    },
+    "button": {
+      "restart": { "name": "Restart" },
+      "soft_reboot": { "name": "Soft reboot" },
+      "hard_reboot": { "name": "Hard reboot" },
+      "shutdown": { "name": "Shutdown" },
+      "eject": { "name": "Eject disc" },
+      "insert": { "name": "Insert disc" }
+    },
+    "image": {
+      "game_cover": { "name": "Game cover" }
+    }
+  }
+}

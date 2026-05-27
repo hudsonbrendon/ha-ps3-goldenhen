@@ -30,17 +30,16 @@ async def test_fan_switch_on_off(hass):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     coordinator.client.async_command = AsyncMock()
 
-    # fan_auto has no device_class -> entity_id switch.ps3_none (no translations)
     await hass.services.async_call(
         "switch", SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: "switch.ps3_none"}, blocking=True,
+        {ATTR_ENTITY_ID: "switch.ps3_fan_auto"}, blocking=True,
     )
     coordinator.client.async_command.assert_awaited_with(CMD_FAN_AUTO)
-    assert hass.states.get("switch.ps3_none").state == "on"
+    assert hass.states.get("switch.ps3_fan_auto").state == "on"
 
     await hass.services.async_call(
         "switch", SERVICE_TURN_OFF,
-        {ATTR_ENTITY_ID: "switch.ps3_none"}, blocking=True,
+        {ATTR_ENTITY_ID: "switch.ps3_fan_auto"}, blocking=True,
     )
     coordinator.client.async_command.assert_awaited_with(CMD_FAN_MANUAL)
-    assert hass.states.get("switch.ps3_none").state == "off"
+    assert hass.states.get("switch.ps3_fan_auto").state == "off"

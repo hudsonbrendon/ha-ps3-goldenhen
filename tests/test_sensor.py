@@ -25,20 +25,18 @@ async def _setup(hass, status: PS3Status) -> None:
 @pytest.mark.asyncio
 async def test_cpu_temp_sensor(hass):
     await _setup(hass, PS3Status(online=True, cpu_temp=62.0, rsx_temp=58.0))
-    # entity_id based on device_class (no translations file in test env)
-    assert hass.states.get("sensor.ps3_temperature").state == "62.0"
-    assert hass.states.get("sensor.ps3_temperature_2").state == "58.0"
+    assert hass.states.get("sensor.ps3_cpu_temperature").state == "62.0"
+    assert hass.states.get("sensor.ps3_rsx_temperature").state == "58.0"
 
 
 @pytest.mark.asyncio
 async def test_fan_and_memory_sensors(hass):
     await _setup(hass, PS3Status(online=True, fan_speed=45, free_memory=213))
-    # fan_speed has no device_class -> slug "none"; free_memory -> "data_size"
-    assert hass.states.get("sensor.ps3_none").state == "45"
-    assert hass.states.get("sensor.ps3_data_size").state == "213"
+    assert hass.states.get("sensor.ps3_fan_speed").state == "45"
+    assert hass.states.get("sensor.ps3_free_memory").state == "213"
 
 
 @pytest.mark.asyncio
 async def test_sensor_unavailable_when_offline(hass):
     await _setup(hass, PS3Status(online=False))
-    assert hass.states.get("sensor.ps3_temperature").state == "unavailable"
+    assert hass.states.get("sensor.ps3_cpu_temperature").state == "unavailable"

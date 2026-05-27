@@ -1,0 +1,56 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "PS3 GoldenHEN",
+        "description": "Conecte ao webMAN MOD rodando no seu PS3 desbloqueado.",
+        "data": {
+          "name": "Nome",
+          "host": "Host (endereço IP)",
+          "port": "Porta"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Não foi possível conectar ao webMAN MOD. Verifique o IP, se o PS3 está ligado e se o webMAN MOD está rodando."
+    },
+    "abort": {
+      "already_configured": "Este PS3 já está configurado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opções",
+        "data": { "scan_interval": "Intervalo de atualização (segundos)" }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "online": { "name": "Online" }
+    },
+    "sensor": {
+      "cpu_temp": { "name": "Temperatura da CPU" },
+      "rsx_temp": { "name": "Temperatura do RSX" },
+      "fan_speed": { "name": "Velocidade do fan" },
+      "free_memory": { "name": "Memória livre" },
+      "firmware": { "name": "Firmware" },
+      "game_title": { "name": "Jogo atual" }
+    },
+    "switch": {
+      "fan_auto": { "name": "Fan automático" }
+    },
+    "button": {
+      "restart": { "name": "Reiniciar" },
+      "soft_reboot": { "name": "Soft reboot" },
+      "hard_reboot": { "name": "Hard reboot" },
+      "shutdown": { "name": "Desligar" },
+      "eject": { "name": "Ejetar disco" },
+      "insert": { "name": "Inserir disco" }
+    },
+    "image": {
+      "game_cover": { "name": "Capa do jogo" }
+    }
+  }
+}
