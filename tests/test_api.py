@@ -29,6 +29,19 @@ def test_parse_cpursx_extracts_fields():
     assert status.free_memory == 213
 
 
+def test_parse_cpursx_game_title_xmb_is_none():
+    """When PS3 is in XMB (menu), game_title should be None."""
+    status = parse_cpursx(_read("cpursx_reference.html"))
+    assert status.game_title is None
+
+
+def test_parse_cpursx_game_title_parsed():
+    """When a game is running, game_title should reflect the game name."""
+    html = "<html>Game: Demon's Souls<br></html>"
+    status = parse_cpursx(html)
+    assert status.game_title == "Demon's Souls"
+
+
 def test_parse_cpursx_empty_is_offline_safe():
     status = parse_cpursx("")
     assert status.online is True  # respondeu HTTP, mas sem campos

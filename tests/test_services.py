@@ -7,7 +7,7 @@ from homeassistant.const import CONF_HOST, CONF_PORT
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.ps3_goldenhen.api import PS3Status
-from custom_components.ps3_goldenhen.const import CMD_POPUP, DOMAIN
+from custom_components.ps3_goldenhen.const import CMD_PLAY, CMD_POPUP, DOMAIN
 
 
 async def _setup(hass):
@@ -36,4 +36,21 @@ async def test_notify_service(hass):
         blocking=True,
     )
     expected = f"{CMD_POPUP}/{quote('ola mundo')}"
+    coordinator.client.async_command.assert_awaited_once_with(expected)
+
+
+@pytest.mark.asyncio
+async def test_launch_game_service_quotes_path(hass):
+    """Paths with spaces/special chars must be URL-encoded (slashes preserved)."""
+    entry = await _setup(hass)
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator.client.async_command = AsyncMock()
+
+    path = "/dev_hdd0/PS3ISO/Cool Game (USA).iso"
+    await hass.services.async_call(
+        DOMAIN, "launch_game",
+        {"entry_id": entry.entry_id, "path": path},
+        blocking=True,
+    )
+    expected = CMD_PLAY + quote(path, safe="/")
     coordinator.client.async_command.assert_awaited_once_with(expected)

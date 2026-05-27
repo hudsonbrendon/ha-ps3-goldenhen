@@ -42,7 +42,7 @@ BUTTONS: tuple[PS3ButtonDescription, ...] = (
     ),
     PS3ButtonDescription(
         key="shutdown", translation_key="shutdown",
-        device_class="restart", icon="mdi:power", command=CMD_SHUTDOWN,
+        icon="mdi:power", command=CMD_SHUTDOWN,
     ),
     PS3ButtonDescription(
         key="eject", translation_key="eject",

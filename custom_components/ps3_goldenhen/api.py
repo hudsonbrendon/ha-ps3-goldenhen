@@ -35,6 +35,7 @@ _RE_TEMP = re.compile(r"(\d+(?:\.\d+)?)\s*°C")
 _RE_FAN = re.compile(r"(\d+)\s*%")
 _RE_FW = re.compile(r"\b(\d\.\d{2})\b")
 _RE_MEM = re.compile(r"(\d+)\s*MB", re.IGNORECASE)
+_RE_GAME = re.compile(r"Game:\s*(.+?)\s*<", re.IGNORECASE)
 
 
 def parse_cpursx(html: str) -> PS3Status:
@@ -54,6 +55,9 @@ def parse_cpursx(html: str) -> PS3Status:
         status.firmware = m.group(1)
     if (m := _RE_MEM.search(text)) is not None:
         status.free_memory = int(m.group(1))
+    if (m := _RE_GAME.search(text)) is not None:
+        title = m.group(1).strip()
+        status.game_title = None if title.upper() == "XMB" else title
 
     return status
 

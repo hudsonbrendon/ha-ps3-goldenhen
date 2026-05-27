@@ -7,6 +7,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
@@ -59,6 +60,8 @@ def _register_services(hass: HomeAssistant) -> None:
 
     def _coordinator(call: ServiceCall):
         entry_id = call.data[ATTR_ENTRY_ID]
+        if entry_id not in hass.data.get(DOMAIN, {}):
+            raise ServiceValidationError(f"PS3 config entry '{entry_id}' not found")
         return hass.data[DOMAIN][entry_id]
 
     async def _notify(call: ServiceCall) -> None:
@@ -73,7 +76,8 @@ def _register_services(hass: HomeAssistant) -> None:
 
     async def _launch(call: ServiceCall) -> None:
         coord = _coordinator(call)
-        await coord.client.async_command(f"{CMD_PLAY}{call.data['path']}")
+        path = quote(call.data["path"], safe="/")
+        await coord.client.async_command(f"{CMD_PLAY}{path}")
 
     async def _set_fan(call: ServiceCall) -> None:
         coord = _coordinator(call)
