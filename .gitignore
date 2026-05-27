@@ -9,3 +9,6 @@ venv/
 .mypy_cache/
 .ruff_cache/
 .DS_Store
+
+# Internal dev docs (plans, recon notes) — kept local, may contain private LAN/infra details
+docs/
