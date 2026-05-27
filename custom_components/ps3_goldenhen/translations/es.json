@@ -1,0 +1,56 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "PS3 GoldenHEN",
+        "description": "Conéctate al webMAN MOD que se ejecuta en tu PS3 desbloqueada.",
+        "data": {
+          "name": "Nombre",
+          "host": "Host (dirección IP)",
+          "port": "Puerto"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se pudo conectar con webMAN MOD. Verifica la IP, que la PS3 esté encendida y que webMAN MOD esté en ejecución."
+    },
+    "abort": {
+      "already_configured": "Esta PS3 ya está configurada."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones",
+        "data": { "scan_interval": "Intervalo de actualización (segundos)" }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "online": { "name": "En línea" }
+    },
+    "sensor": {
+      "cpu_temp": { "name": "Temperatura de la CPU" },
+      "rsx_temp": { "name": "Temperatura del RSX" },
+      "fan_speed": { "name": "Velocidad del ventilador" },
+      "free_memory": { "name": "Memoria libre" },
+      "firmware": { "name": "Firmware" },
+      "game_title": { "name": "Juego actual" }
+    },
+    "switch": {
+      "fan_auto": { "name": "Ventilador automático" }
+    },
+    "button": {
+      "restart": { "name": "Reiniciar" },
+      "soft_reboot": { "name": "Reinicio suave" },
+      "hard_reboot": { "name": "Reinicio forzado" },
+      "shutdown": { "name": "Apagar" },
+      "eject": { "name": "Expulsar disco" },
+      "insert": { "name": "Insertar disco" }
+    },
+    "image": {
+      "game_cover": { "name": "Carátula del juego" }
+    }
+  }
+}
