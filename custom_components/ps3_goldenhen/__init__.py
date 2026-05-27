@@ -12,6 +12,7 @@ from .coordinator import PS3DataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
+    Platform.SENSOR,
 ]
 
 
