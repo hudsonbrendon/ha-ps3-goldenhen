@@ -1,0 +1,12 @@
+{
+  "domain": "ps3_goldenhen",
+  "name": "PS3 GoldenHEN",
+  "codeowners": ["@hudsonbrendon"],
+  "config_flow": true,
+  "documentation": "https://github.com/hudsonbrendon/ha-ps3-goldenhen",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/hudsonbrendon/ha-ps3-goldenhen/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
