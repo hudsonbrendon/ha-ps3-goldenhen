@@ -1,0 +1,74 @@
+notify:
+  name: Show popup
+  description: Exibe uma mensagem popup na tela do PS3.
+  fields:
+    entry_id:
+      name: Console
+      description: ID da config entry do PS3.
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    message:
+      name: Message
+      description: Texto a exibir.
+      required: true
+      example: "Hora do jantar!"
+      selector:
+        text:
+
+buzzer:
+  name: Buzzer
+  description: Toca o buzzer interno do PS3.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    pattern:
+      name: Pattern
+      description: Padrão do beep (0-9).
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 9
+
+launch_game:
+  name: Launch game
+  description: Inicia um jogo/ISO pelo caminho no PS3.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    path:
+      name: Path
+      description: Caminho do jogo no PS3 (ex. /dev_hdd0/PS3ISO/Game.iso).
+      required: true
+      selector:
+        text:
+
+set_fan_speed:
+  name: Set fan speed
+  description: Define a velocidade do fan em modo manual (%).
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    speed:
+      name: Speed
+      description: Velocidade do fan em porcentagem.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
