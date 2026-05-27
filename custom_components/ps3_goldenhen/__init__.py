@@ -10,8 +10,9 @@ from .api import WebManClient
 from .const import CONF_SCAN_INTERVAL, DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DOMAIN
 from .coordinator import PS3DataUpdateCoordinator
 
-# TODO: re-add platforms as Tasks 7-11 land
-PLATFORMS: list[Platform] = []
+PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
+]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
