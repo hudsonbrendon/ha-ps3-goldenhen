@@ -13,6 +13,7 @@ from .coordinator import PS3DataUpdateCoordinator
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.IMAGE,
     Platform.SENSOR,
     Platform.SWITCH,
 ]

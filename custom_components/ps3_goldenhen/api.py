@@ -25,6 +25,7 @@ class PS3Status:
     firmware: str | None = None
     free_memory: int | None = None  # MB
     game_title: str | None = None
+    game_icon_url: str | None = None
     raw: str = ""
 
 
