@@ -1,13 +1,12 @@
 """Tests for the webMAN MOD API client and parser."""
 from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock
 
 import aiohttp
 import pytest
-from aioresponses import aioresponses
 
 from custom_components.ps3_goldenhen.api import (
     PS3ConnectionError,
-    PS3Status,
     WebManClient,
     parse_cpursx,
 )
@@ -48,27 +47,31 @@ def test_parse_cpursx_empty_is_offline_safe():
     assert status.cpu_temp is None
 
 
+def _mock_session(*, text: str = "", exc: Exception | None = None) -> MagicMock:
+    """Build a fake aiohttp session (no real connector → no DNS resolver thread)."""
+    session = MagicMock()
+    if exc is not None:
+        session.get = AsyncMock(side_effect=exc)
+    else:
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        resp.text = AsyncMock(return_value=text)
+        session.get = AsyncMock(return_value=resp)
+    return session
+
+
 @pytest.mark.asyncio
 async def test_client_get_status_ok():
-    with aioresponses() as mocked:
-        mocked.get(
-            "http://1.2.3.4:80/cpursx.ps3",
-            body=_read("cpursx_reference.html"),
-        )
-        async with aiohttp.ClientSession() as session:
-            client = WebManClient(session, "1.2.3.4", 80)
-            status = await client.async_get_status()
+    session = _mock_session(text=_read("cpursx_reference.html"))
+    client = WebManClient(session, "1.2.3.4", 80)
+    status = await client.async_get_status()
     assert status.cpu_temp == 62.0
+    session.get.assert_awaited_once_with("http://1.2.3.4:80/cpursx.ps3")
 
 
 @pytest.mark.asyncio
 async def test_client_connection_error_raises():
-    with aioresponses() as mocked:
-        mocked.get(
-            "http://1.2.3.4:80/cpursx.ps3",
-            exception=aiohttp.ClientError("boom"),
-        )
-        async with aiohttp.ClientSession() as session:
-            client = WebManClient(session, "1.2.3.4", 80)
-            with pytest.raises(PS3ConnectionError):
-                await client.async_get_status()
+    session = _mock_session(exc=aiohttp.ClientError("boom"))
+    client = WebManClient(session, "1.2.3.4", 80)
+    with pytest.raises(PS3ConnectionError):
+        await client.async_get_status()
