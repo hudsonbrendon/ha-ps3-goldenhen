@@ -11,7 +11,12 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE, UnitOfInformation, UnitOfTemperature
+from homeassistant.const import (
+    PERCENTAGE,
+    EntityCategory,
+    UnitOfInformation,
+    UnitOfTemperature,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -82,6 +87,84 @@ SENSORS: tuple[PS3SensorDescription, ...] = (
         translation_key="game_title",
         icon="mdi:gamepad-variant",
         value_fn=lambda s: s.game_title,
+    ),
+    # --- Onda 2 extended sensors ---
+    PS3SensorDescription(
+        key="runtime",
+        translation_key="runtime",
+        icon="mdi:timer-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.runtime,
+    ),
+    PS3SensorDescription(
+        key="boots_on",
+        translation_key="boots_on",
+        icon="mdi:power",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.boots_on,
+    ),
+    PS3SensorDescription(
+        key="fan_mode",
+        translation_key="fan_mode",
+        icon="mdi:fan",
+        value_fn=lambda s: s.fan_mode,
+    ),
+    PS3SensorDescription(
+        key="console_type",
+        translation_key="console_type",
+        icon="mdi:console",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.console_type,
+    ),
+    PS3SensorDescription(
+        key="hen_version",
+        translation_key="hen_version",
+        icon="mdi:flash",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.hen_version,
+    ),
+    PS3SensorDescription(
+        key="webman_version",
+        translation_key="webman_version",
+        icon="mdi:web",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.webman_version,
+    ),
+    PS3SensorDescription(
+        key="connection",
+        translation_key="connection",
+        icon="mdi:lan",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.connection,
+    ),
+    PS3SensorDescription(
+        key="mac_address",
+        translation_key="mac_address",
+        icon="mdi:network",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.mac_address,
+    ),
+    PS3SensorDescription(
+        key="bd_drive",
+        translation_key="bd_drive",
+        icon="mdi:disc-player",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.bd_drive,
+    ),
+    PS3SensorDescription(
+        key="flash_type",
+        translation_key="flash_type",
+        icon="mdi:memory",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.flash_type,
+    ),
+    PS3SensorDescription(
+        key="game_title_id",
+        translation_key="game_title_id",
+        icon="mdi:identifier",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda s: s.game_title_id,
     ),
 )
 

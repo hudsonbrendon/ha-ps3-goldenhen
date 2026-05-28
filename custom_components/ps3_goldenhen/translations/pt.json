@@ -28,7 +28,9 @@
   },
   "entity": {
     "binary_sensor": {
-      "online": { "name": "Online" }
+      "online": { "name": "Online" },
+      "game_running": { "name": "Jogo rodando" },
+      "cobra_mode": { "name": "Modo COBRA" }
     },
     "sensor": {
       "cpu_temp": { "name": "Temperatura da CPU" },
@@ -37,7 +39,18 @@
       "free_memory": { "name": "Memória livre" },
       "hdd_free": { "name": "Espaço livre em disco" },
       "firmware": { "name": "Firmware" },
-      "game_title": { "name": "Jogo atual" }
+      "game_title": { "name": "Jogo atual" },
+      "runtime": { "name": "Tempo ligado total" },
+      "boots_on": { "name": "Inicializações" },
+      "fan_mode": { "name": "Modo do fan" },
+      "console_type": { "name": "Tipo de console" },
+      "hen_version": { "name": "Versão do HEN" },
+      "webman_version": { "name": "Versão do webMAN" },
+      "connection": { "name": "Conexão" },
+      "mac_address": { "name": "Endereço MAC" },
+      "bd_drive": { "name": "Drive Blu-ray" },
+      "flash_type": { "name": "Tipo de flash" },
+      "game_title_id": { "name": "Title ID" }
     },
     "switch": {
       "fan_auto": { "name": "Fan automático" }

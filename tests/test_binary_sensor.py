@@ -36,3 +36,60 @@ async def test_online_false(hass):
     await _setup(hass, PS3Status(online=False))
     state = hass.states.get("binary_sensor.ps3_online")
     assert state.state == "off"
+
+
+@pytest.mark.asyncio
+async def test_game_running_on_when_game_title_set(hass):
+    """game_running is on when a game_title is present."""
+    # entity_id confirmed: binary_sensor.ps3_game_running
+    await _setup(
+        hass,
+        PS3Status(online=True, game_title="God of War®: Chains of Olympus (Digital)"),
+    )
+    state = hass.states.get("binary_sensor.ps3_game_running")
+    assert state is not None
+    assert state.state == "on"
+
+
+@pytest.mark.asyncio
+async def test_game_running_off_when_no_game(hass):
+    """game_running is off when no game is running."""
+    await _setup(hass, PS3Status(online=True, game_title=None))
+    state = hass.states.get("binary_sensor.ps3_game_running")
+    assert state is not None
+    assert state.state == "off"
+
+
+@pytest.mark.asyncio
+async def test_game_running_unavailable_when_offline(hass):
+    """game_running is unavailable when the PS3 is offline."""
+    await _setup(hass, PS3Status(online=False))
+    state = hass.states.get("binary_sensor.ps3_game_running")
+    assert state.state == "unavailable"
+
+
+@pytest.mark.asyncio
+async def test_cobra_mode_on(hass):
+    """cobra_mode is on when cobra=True."""
+    # entity_id confirmed: binary_sensor.ps3_cobra_mode
+    await _setup(hass, PS3Status(online=True, cobra=True))
+    state = hass.states.get("binary_sensor.ps3_cobra_mode")
+    assert state is not None
+    assert state.state == "on"
+
+
+@pytest.mark.asyncio
+async def test_cobra_mode_off(hass):
+    """cobra_mode is off when cobra is False or None."""
+    await _setup(hass, PS3Status(online=True, cobra=False))
+    state = hass.states.get("binary_sensor.ps3_cobra_mode")
+    assert state is not None
+    assert state.state == "off"
+
+
+@pytest.mark.asyncio
+async def test_cobra_mode_unavailable_when_offline(hass):
+    """cobra_mode is unavailable when the PS3 is offline."""
+    await _setup(hass, PS3Status(online=False))
+    state = hass.states.get("binary_sensor.ps3_cobra_mode")
+    assert state.state == "unavailable"

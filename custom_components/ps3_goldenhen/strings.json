@@ -28,7 +28,9 @@
   },
   "entity": {
     "binary_sensor": {
-      "online": { "name": "Online" }
+      "online": { "name": "Online" },
+      "game_running": { "name": "Game running" },
+      "cobra_mode": { "name": "COBRA mode" }
     },
     "sensor": {
       "cpu_temp": { "name": "CPU temperature" },
@@ -37,7 +39,18 @@
       "free_memory": { "name": "Free memory" },
       "hdd_free": { "name": "Free disk space" },
       "firmware": { "name": "Firmware" },
-      "game_title": { "name": "Current game" }
+      "game_title": { "name": "Current game" },
+      "runtime": { "name": "Total runtime" },
+      "boots_on": { "name": "Boot count" },
+      "fan_mode": { "name": "Fan mode" },
+      "console_type": { "name": "Console type" },
+      "hen_version": { "name": "HEN version" },
+      "webman_version": { "name": "webMAN version" },
+      "connection": { "name": "Connection" },
+      "mac_address": { "name": "MAC address" },
+      "bd_drive": { "name": "Blu-ray drive" },
+      "flash_type": { "name": "Flash type" },
+      "game_title_id": { "name": "Title ID" }
     },
     "switch": {
       "fan_auto": { "name": "Fan auto" }
