@@ -170,7 +170,7 @@ send_command:
 
 read_memory:
   name: Read memory
-  description: Lê memória do processo no PS3 via ps3mapi. Retorna {"data": <response>}.
+  description: 'Lê memória do processo no PS3 via ps3mapi. Retorna {"data": <response>}.'
   fields:
     entry_id:
       name: Console
