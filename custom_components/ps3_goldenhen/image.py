@@ -17,7 +17,12 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([PS3GameCover(hass, coordinator, entry)])
+    async_add_entities(
+        [
+            PS3GameCover(hass, coordinator, entry),
+            PS3GameBackground(hass, coordinator, entry),
+        ]
+    )
 
 
 class PS3GameCover(PS3Entity, ImageEntity):
@@ -38,6 +43,31 @@ class PS3GameCover(PS3Entity, ImageEntity):
 
     def _handle_coordinator_update(self) -> None:
         url = self.coordinator.data.game_icon_url if self.coordinator.data else None
+        if url != self._current_url:
+            self._current_url = url
+            self._attr_image_url = url
+            self._attr_image_last_updated = dt_util.utcnow()
+        super()._handle_coordinator_update()
+
+
+class PS3GameBackground(PS3Entity, ImageEntity):
+    """Background art (PIC1.PNG) of the running game, when available."""
+
+    _attr_translation_key = "game_background"
+
+    def __init__(self, hass: HomeAssistant, coordinator, entry) -> None:
+        PS3Entity.__init__(self, coordinator, entry)
+        ImageEntity.__init__(self, hass)
+        self._attr_unique_id = f"{entry.entry_id}_game_background"
+        self._current_url: str | None = None
+
+    @property
+    def available(self) -> bool:
+        data = self.coordinator.data
+        return bool(data and data.online and data.game_bg_url)
+
+    def _handle_coordinator_update(self) -> None:
+        url = self.coordinator.data.game_bg_url if self.coordinator.data else None
         if url != self._current_url:
             self._current_url = url
             self._attr_image_url = url

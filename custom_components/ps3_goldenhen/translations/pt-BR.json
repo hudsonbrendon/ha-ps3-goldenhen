@@ -79,7 +79,8 @@
       "beep3": { "name": "Bip ×3" }
     },
     "image": {
-      "game_cover": { "name": "Capa do jogo" }
+      "game_cover": { "name": "Capa do jogo" },
+      "game_background": { "name": "Fundo do jogo" }
     }
   }
 }

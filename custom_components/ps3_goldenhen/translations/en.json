@@ -79,7 +79,8 @@
       "beep3": { "name": "Beep ×3" }
     },
     "image": {
-      "game_cover": { "name": "Game cover" }
+      "game_cover": { "name": "Game cover" },
+      "game_background": { "name": "Game background" }
     }
   }
 }

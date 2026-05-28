@@ -29,11 +29,25 @@ class PS3DataUpdateCoordinator(DataUpdateCoordinator[PS3Status]):
             update_interval=timedelta(seconds=scan_interval),
         )
         self.client = client
+        self._last_title_id: str | None = None
 
     async def _async_update_data(self) -> PS3Status:
         """Fetch status; a console offline não é erro fatal."""
         try:
-            return await self.client.async_get_status()
+            data = await self.client.async_get_status()
         except PS3ConnectionError as err:
             _LOGGER.debug("PS3 unreachable: %s", err)
             return PS3Status(online=False)
+
+        if data.online and data.game_title_id != self._last_title_id:
+            self.hass.bus.async_fire(
+                "ps3_goldenhen_event",
+                {
+                    "type": "game_changed",
+                    "title_id": data.game_title_id,
+                    "title": data.game_title,
+                },
+            )
+            self._last_title_id = data.game_title_id
+
+        return data

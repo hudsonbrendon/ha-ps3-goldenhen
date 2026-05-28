@@ -16,6 +16,20 @@ notify:
       example: "Hora do jantar!"
       selector:
         text:
+    icon:
+      name: Icon
+      description: Ícone do popup (0-50). Opcional.
+      selector:
+        number:
+          min: 0
+          max: 50
+    sound:
+      name: Sound
+      description: Som do popup (0-9). Opcional.
+      selector:
+        number:
+          min: 0
+          max: 9
 
 buzzer:
   name: Buzzer
@@ -72,3 +86,146 @@ set_fan_speed:
           min: 0
           max: 100
           unit_of_measurement: "%"
+
+led:
+  name: Set LED
+  description: Define a cor e o modo do LED do PS3.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    color:
+      name: Color
+      description: Código de cor do LED.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 255
+    mode:
+      name: Mode
+      description: Modo do LED.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 255
+
+mount:
+  name: Mount
+  description: Monta um jogo/ISO pelo caminho no PS3.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    path:
+      name: Path
+      description: Caminho do jogo ou ISO a montar no PS3.
+      required: true
+      selector:
+        text:
+
+set_fan_target_temp:
+  name: Set fan target temperature
+  description: Define a temperatura-alvo para o modo dinâmico do fan.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    temperature:
+      name: Temperature
+      description: Temperatura-alvo em graus Celsius (40-80).
+      required: true
+      selector:
+        number:
+          min: 40
+          max: 80
+          unit_of_measurement: "°C"
+
+send_command:
+  name: Send raw command
+  description: Envia um comando web cru ao webMAN MOD (ex. /popup.ps3/oi).
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    command:
+      name: Command
+      description: Comando web relativo (ex. /popup.ps3/oi).
+      required: true
+      selector:
+        text:
+
+read_memory:
+  name: Read memory
+  description: Lê memória do processo no PS3 via ps3mapi. Retorna {"data": <response>}.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    pid:
+      name: PID
+      description: ID do processo (hex string).
+      required: true
+      selector:
+        text:
+    address:
+      name: Address
+      description: Endereço de memória (hex string).
+      required: true
+      selector:
+        text:
+    size:
+      name: Size
+      description: Número de bytes a ler.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 65536
+
+write_memory:
+  name: Write memory
+  description: >-
+    ⚠️ Advanced/dangerous — Escreve dados na memória de um processo no PS3 via
+    ps3mapi. Use com cuidado; pode travar ou corromper o console.
+  fields:
+    entry_id:
+      name: Console
+      required: true
+      selector:
+        config_entry:
+          integration: ps3_goldenhen
+    pid:
+      name: PID
+      description: ID do processo (hex string).
+      required: true
+      selector:
+        text:
+    address:
+      name: Address
+      description: Endereço de memória (hex string).
+      required: true
+      selector:
+        text:
+    data:
+      name: Data
+      description: Dados a escrever (hex string).
+      required: true
+      selector:
+        text:
