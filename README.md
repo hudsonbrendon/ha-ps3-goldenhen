@@ -33,7 +33,7 @@ game, LED control, memory peek/poke, raw commands, and console diagnostics.
 - 🌀 **Fan** — speed sensor (%), fan mode sensor, **Fan auto** switch, fan speed **number**
   (0–100 %, slider), fan target temperature **number** (40–80 °C), and a **Fan mode select**
   (Dynamic / Manual).
-- 🧠 **Memory** — free system memory (MB).
+- 🧠 **Memory** — free system memory (KB) and free HDD space (GB).
 - 🧩 **Firmware** — the console's firmware version.
 - ⏱️ **Uptime & boot count** — total runtime string and boot-on counter sensor.
 - 🖥️ **Console diagnostics** — console type (CEX/DEX/COBRA), HEN version, webMAN version,

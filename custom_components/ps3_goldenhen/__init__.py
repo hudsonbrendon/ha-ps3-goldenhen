@@ -63,8 +63,8 @@ SERVICE_FAN_SPEED_SCHEMA = vol.Schema(
 SERVICE_LED_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_ENTRY_ID): cv.string,
-        vol.Required("color"): int,
-        vol.Required("mode"): int,
+        vol.Required("color"): vol.All(int, vol.Range(min=0, max=255)),
+        vol.Required("mode"): vol.All(int, vol.Range(min=0, max=255)),
     }
 )
 SERVICE_MOUNT_SCHEMA = vol.Schema(
@@ -158,7 +158,13 @@ def _register_services(hass: HomeAssistant) -> None:
 
     async def _send_command(call: ServiceCall) -> None:
         coord = _coordinator(call)
-        await coord.client.async_command(call.data["command"])
+        command = call.data["command"]
+        if not command.startswith("/"):
+            raise ServiceValidationError(
+                "command must be a relative webMAN web command starting with '/' "
+                "(e.g. /popup.ps3/hi)"
+            )
+        await coord.client.async_command(command)
 
     async def _read_memory(call: ServiceCall) -> dict:
         coord = _coordinator(call)
@@ -168,6 +174,11 @@ def _register_services(hass: HomeAssistant) -> None:
         result = await coord.client.async_get_ps3mapi(
             f"MEMORY GET {pid} {address} {size}"
         )
+        if result is None:
+            raise ServiceValidationError(
+                "read_memory failed: the PS3 is unreachable or ps3mapi returned "
+                "an error (check pid/address/size)"
+            )
         return {"data": result}
 
     async def _write_memory(call: ServiceCall) -> None:

@@ -73,7 +73,7 @@ _RE_BOOTS_OFF = re.compile(r"([\d,]+)\s*OFF\b")
 _RE_HEN = re.compile(r"(PS3HEN\s+[\d.]+)", re.IGNORECASE)
 _RE_WEBMAN = re.compile(r"webMAN\s+([\w.]+)\s+MOD", re.IGNORECASE)
 _RE_MAC = re.compile(
-    r"MAC Addr\s*:\s*([0-9A-Fa-f:]{17})\s*-\s*([\d.]+)\s+(WLAN|LAN|Ethernet)",
+    r"MAC Addr\s*:\s*([0-9A-Fa-f:]{17})\s*-\s*([\d.]+)(?:\s+(WLAN|LAN|Ethernet))?",
     re.IGNORECASE,
 )
 # BD info line ends before the next HTML tag; flash type is on the Firmware line.
