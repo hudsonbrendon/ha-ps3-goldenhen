@@ -110,6 +110,12 @@ You can later change the polling interval via **Configure** (options flow).
 
 ## Entities
 
+### Media player
+
+| Entity | Description |
+|--------|-------------|
+| `media_player.<name>` | PlayStation 3 media player (receiver class). State: `off` when unreachable, `playing` while a game runs, `idle` in the XMB. Supports `select_source` (launches a game from `/dev_hdd0/game` via PARAM.SFO) and `turn_off` (shutdown). Game list populated from `/dev_hdd0/game` PARAM.SFO files. |
+
 ### Binary sensors
 
 | Entity | Description |
@@ -159,6 +165,7 @@ You can later change the polling interval via **Configure** (options flow).
 | Entity | Description |
 |--------|-------------|
 | `select.<name>_fan_mode_select` | Fan control mode: `Dynamic` or `Manual`. |
+| `select.<name>_game_launcher` | Game launcher — options are game names read from `/dev_hdd0/game` PARAM.SFO files; selecting a game launches it via `/play.ps3`. |
 
 ### Buttons
 

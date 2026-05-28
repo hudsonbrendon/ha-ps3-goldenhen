@@ -60,7 +60,8 @@
       "fan_target_temp": { "name": "Temperatura-alvo do fan" }
     },
     "select": {
-      "fan_mode_select": { "name": "Modo do fan" }
+      "fan_mode_select": { "name": "Modo do fan" },
+      "game_launcher": { "name": "Lançador de jogos" }
     },
     "button": {
       "restart": { "name": "Reiniciar" },

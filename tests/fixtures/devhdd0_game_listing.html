@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<head>
+<title>wMAN MOD 1.47.48</title>
+<link rel="stylesheet" type="text/css" href="/dev_hdd0/xmlhost/game_plugin/sman.css"/>
+<script src="/dev_hdd0/xmlhost/game_plugin/jquery.min.js"></script>
+<script src="/dev_hdd0/xmlhost/game_plugin/jquery-ui.min.js"></script>
+<script src="/dev_hdd0/xmlhost/game_plugin/sman.js"></script>
+<script>$(function(){$("#mg").sortable();});</script>
+</head>
+<body bgcolor="#303030" onresize="resizeEvent()">
+<div class="top_line">&nbsp;</div>
+<div id="smv" class="smv"><a style="cursor:pointer" onclick="home();return false;">wMAN MOD</a></div>
+
+<font face="Helvetica">
+<div id="rxml"><H1 id="msg1">Refreshing XML <script>dot();</script></H1></div>
+<div id="rhtm"><H1 id="msg2">Loading Games <script>dot();</script></H1></div>
+<div id="wmsg"><H1><script>dot();</script></H1></div>
+
+<script>
+function find()
+{
+	var s=prompt('Search:','');
+	if(s){
+		document.getElementById('rhtm').style.display='block';
+		document.getElementById('rhtm').innerHTML='<h1>Searching...</h1>';
+		var url=self.location.href;
+		if(url.indexOf('etmem.ps3mapi')>0||url.indexOf('/hexview.ps3')>0){
+			var pos=url.indexOf('&find=');
+			if(pos>0)
+				self.location=url.substring(0,pos)+'&find='+escape(s);
+			else
+				self.location+='&find='+escape(s);
+		}
+		else if(url.indexOf('/peek')>0||url.indexOf('/poke')>0||url.indexOf('/find')>0){
+			var pos=url.indexOf('=');
+			if(pos>0)
+				self.location=url.substring(0,pos).replace('/peek','/find').replace('/poke','/find')+'='+escape(s);
+			else
+				self.location=url.replace('/peek','/find').replace('/poke','/find')+'='+escape(s);
+		}
+		else
+			self.location+='?'+escape(s);
+	}
+}
+</script>
+
+<div id="top_action">
+	<div id="top_buttons">
+	<a onclick="document.getElementById('rxml').style.display='block';self.location=(event.ctrlKey)?'/refresh.ps3;/sman.ps3':'/refresh.ps3?xmb;/sman.ps3';" class="t_menu"><span id="refresh">Refresh</span></a>
+	<a onclick="self.location=(event.ctrlKey)?'/mount_ps3/unmount?/sman.ps3':'/mount.ps3/unmount?/sman.ps3';" class="t_menu"><span id="eject">Eject</span></a>
+	<a onclick="self.location='/insert.ps3';" class="t_menu"><span id="insert">Insert</span></a>
+	<a onclick="self.location='/restart.ps3';" class="t_menu"><span id="restart">Restart</span></a>
+	<a onclick="self.location='/shutdown.ps3';" class="t_menu"><span id="shutdown">Shutdown</span></a>
+	</div>
+
+	<div id="cpursx" style="position:absolute;top:5px;right:150px;max-width:220px;overflow:hidden;">
+	<iframe src="/cpursx_ps3" frameborder="0" scrolling="no" seamless="seamless" style="border:none;height:35px;top:5px;overflow:hidden;"></iframe>
+	</div>
+
+	<span style="position:absolute;float:right;right:-5px;top:10px;">
+	<a onclick="if(self.location.href.indexOf('/cpursx.ps3')>0){self.location='/cpursx.html';}else{find();}"><span id="ngames"></span> &nbsp; <img src="/dev_hdd0/tmp/wm_icons/find.png" style="position:relative;top:6px;"></a></font>
+	</span>
+</div>
+
+<div id="left_action">
+	<a onclick="document.getElementById('rhtm').style.display='block';self.location=(event.ctrlKey)?'/index.ps3':'/sman.ps3?';" class="b_games"><span id="games">Games</span></a>
+	<a onclick="self.location='/';" class="b_files"><span id="files">Files</span></a>
+	<a onclick="self.location='/games.ps3';" class="b_cflow">Coverflow</a>
+	<a onclick="self.location='/home.ps3mapi/sman.ps3';" class="b_ps3mapi">PS3MAPI</a>
+	<a onclick="self.location='/setup.ps3/sman.ps3';" class="b_setup" style="color:#0FF;"><span id="setup">Setup</span></a>
+	<a onclick="self.location=(self.location.href.indexOf('/cpursx.ps3')>0)?'/tempc.html':'/cpursx.ps3?/sman.ps3';" class="b_cpursx">CPU/RSX</a>
+</div>
+</font>
+
+<script>
+resizeEvent();
+</script>
+
+<div id="content" class="propfont">
+<noscript><h1 style='color:#f03'>Erro! Javascript Desativado</h1></noscript><script>l('games','Jogos');l('files','Arquivos');l('setup','Configurações');l('eject','Ejetar');l('insert','Inserir');l('refresh','Atualizar');l('restart','Reiniciar');l('shutdown','Desligar');l('msg2','Meus Jogos ...');</script><base href="/dev_hdd0/game/"><div id='toolbox'> <input type="button" value="Stat" onclick="location.href='/stat.ps3/dev_hdd0/game';"> <input type="button" value="Desmontar" onclick="location.href='/mount.ps3/unmount';"> <input type="button" value="gameDATA" onclick="location.href='/extgd.ps3';"> <input type="button" value="Copiar Diretório" onclick='rcpy.style.display="block";location.href="/copy.ps3/dev_hdd0/game";'"> <input type="button" value="Deletar" id="bDel" onclick="tg(this,'/delete.ps3','Deletar','#f90');"> <input type="button" value="Cut" id="bCut" onclick="tg(this,'/cut.ps3','Cut','#f0f');"> <input type="button" value="Copy" id="bCpy" onclick="tg(this,'/cpy.ps3','Copy','#ff');"></div><img id="icon" style="position:fixed;top:98px;right:25px;max-height:176px;z-index:-1;display:none" onerror="this.style.display='none';"><script>function s(o,d){u=o.href;p=u.indexOf('.ps3');if(p>0)u=u.substring(p+4);if(d){p=u.indexOf('/PS3_');if(p<0)p=u.indexOf('/USRDIR');if(p>0)u=u.substring(0,p);u+='/ICON0.PNG';}icon.src=u;icon.style.display='block';}</script><a class="f" href="/dev_hdd0/">/dev_hdd0</a>/<a href="/mount.ps3/dev_hdd0/game">game</a>:<br><style>.sfo{position:absolute;top:308px;right:10px;font-size:14px}td+td{text-align:right}</style><table id="files" class="propfont"><tr><td colspan=3><col width="220"><col width="98"><tr><td><a class="d" href=".." onmouseover="s(this,1);">..</a><td> <a href="/stat.ps3/dev_hdd0/game">&lt;dir></a> &nbsp; <td>28-May-2026 01:57</tr><tr><td><a class="d" href="BCES01585DATA2" onmouseover="s(this,1);">BCES01585DATA2</a><td> <a href="/mount.ps3/dev_hdd0/game/BCES01585DATA2">&lt;dir></a> &nbsp; <td>15-Nov-2024 21:45</tr><tr><td><a class="d" href="FILEMANAG" onmouseover="s(this,1);">FILEMANAG</a><td> <a href="/mount.ps3/dev_hdd0/game/FILEMANAG">&lt;dir></a> &nbsp; <td>27-Apr-2025 13:21</tr><tr><td><a class="d" href="NP00PKGI3" onmouseover="s(this,1);">NP00PKGI3</a><td> <a href="/mount.ps3/dev_hdd0/game/NP00PKGI3">&lt;dir></a> &nbsp; <td>15-Nov-2024 04:08</tr><tr><td><a class="d" href="NP0APOLLO" onmouseover="s(this,1);">NP0APOLLO</a><td> <a href="/mount.ps3/dev_hdd0/game/NP0APOLLO">&lt;dir></a> &nbsp; <td>27-Apr-2025 13:20</tr><tr><td><a class="d" href="NPEB02222" onmouseover="s(this,1);">NPEB02222</a><td> <a href="/mount.ps3/dev_hdd0/game/NPEB02222">&lt;dir></a> &nbsp; <td>13-May-2024 05:05</tr><tr><td><a class="d" href="NPIA00025" onmouseover="s(this,1);">NPIA00025</a><td> <a href="/mount.ps3/dev_hdd0/game/NPIA00025">&lt;dir></a> &nbsp; <td>06-May-2024 08:27</tr><tr><td><a class="d" href="NPJD00093" onmouseover="s(this,1);">NPJD00093</a><td> <a href="/mount.ps3/dev_hdd0/game/NPJD00093">&lt;dir></a> &nbsp; <td>15-Nov-2024 14:23</tr><tr><td><a class="d" href="NPUA80075" onmouseover="s(this,1);">NPUA80075</a><td> <a href="/mount.ps3/dev_hdd0/game/NPUA80075">&lt;dir></a> &nbsp; <td>07-May-2025 18:35</tr><tr><td><a class="d" href="NPUA80636" onmouseover="s(this,1);">NPUA80636</a><td> <a href="/mount.ps3/dev_hdd0/game/NPUA80636">&lt;dir></a> &nbsp; <td>27-Apr-2025 13:39</tr><tr><td><a class="d" href="NPUA80637" onmouseover="s(this,1);">NPUA80637</a><td> <a href="/mount.ps3/dev_hdd0/game/NPUA80637">&lt;dir></a> &nbsp; <td>27-Apr-2025 13:54</tr><tr><td><a class="d" href="PKGLAUNCH" onmouseover="s(this,1);">PKGLAUNCH</a><td> <a href="/mount.ps3/dev_hdd0/game/PKGLAUNCH">&lt;dir></a> &nbsp; <td>28-May-2026 01:57</tr><tr><td><a class="d" href="PS2CONFIG" onmouseover="s(this,1);">PS2CONFIG</a><td> <a href="/mount.ps3/dev_hdd0/game/PS2CONFIG">&lt;dir></a> &nbsp; <td>28-May-2026 01:57</tr><tr><td><a class="d" href="RELOADXMB" onmouseover="s(this,1);">RELOADXMB</a><td> <a href="/mount.ps3/dev_hdd0/game/RELOADXMB">&lt;dir></a> &nbsp; <td>28-May-2026 01:57</tr><tr><td><a class="d" href="UNOSTORES" onmouseover="s(this,1);">UNOSTORES</a><td> <a href="/mount.ps3/dev_hdd0/game/UNOSTORES">&lt;dir></a> &nbsp; <td>27-Apr-2025 13:20</tr><tr><td><a class="d" href="UPDWEBMOD" onmouseover="s(this,1);">UPDWEBMOD</a><td> <a href="/mount.ps3/dev_hdd0/game/UPDWEBMOD">&lt;dir></a> &nbsp; <td>28-May-2026 01:55</tr><tr><td><a class="d" href="XMBMANPLS" onmouseover="s(this,1);">XMBMANPLS</a><td> <a href="/mount.ps3/dev_hdd0/game/XMBMANPLS">&lt;dir></a> &nbsp; <td>28-May-2026 01:26</tr></table><script>icon.src="/dev_hdd0/game/ICON0.PNG";icon.style.display='block';</script><script src="/dev_hdd0/xmlhost/game_plugin/fm.js"></script><hr><b><a href="/dev_hdd0">/dev_hdd0</a>: 391.0 GB Livres</b> &nbsp; <font color="#C0C0C0">16 Dir(s) 0 Arquivos 9 Kb</font><div style="position:fixed;right:20px;bottom:10px;opacity:0.2"><a href="#Top">&#9650;</a></div><b><script src="/dev_hdd0/xmlhost/game_plugin/common.js"></script></font></body></html>

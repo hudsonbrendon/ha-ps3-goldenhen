@@ -1,5 +1,5 @@
 """Shared pytest fixtures."""
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -35,3 +35,18 @@ def mock_clientsession():
         ),
     ):
         yield session
+
+
+@pytest.fixture(autouse=True)
+def mock_async_refresh_games():
+    """Patch PS3DataUpdateCoordinator.async_refresh_games to be a no-op by default.
+
+    async_refresh_games is called during entry setup; without this patch the
+    real HTTP path is executed with a MagicMock session, which fails.  Tests
+    that need real game data set coordinator.games directly after setup.
+    """
+    with patch(
+        "custom_components.ps3_goldenhen.coordinator.PS3DataUpdateCoordinator.async_refresh_games",
+        new=AsyncMock(return_value=None),
+    ):
+        yield

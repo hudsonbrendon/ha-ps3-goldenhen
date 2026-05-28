@@ -30,6 +30,7 @@ class PS3DataUpdateCoordinator(DataUpdateCoordinator[PS3Status]):
         )
         self.client = client
         self._last_title_id: str | None = None
+        self.games: list[dict] = []
 
     async def _async_update_data(self) -> PS3Status:
         """Fetch status; a console offline não é erro fatal."""
@@ -51,3 +52,10 @@ class PS3DataUpdateCoordinator(DataUpdateCoordinator[PS3Status]):
             self._last_title_id = data.game_title_id
 
         return data
+
+    async def async_refresh_games(self) -> None:
+        """Refresh the installed games list (best-effort; errors are swallowed)."""
+        try:
+            self.games = await self.client.async_get_games()
+        except PS3ConnectionError:
+            pass

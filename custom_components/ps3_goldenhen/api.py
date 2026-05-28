@@ -1,7 +1,9 @@
 """HTTP client and HTML parser for webMAN MOD on a jailbroken PS3."""
 from __future__ import annotations
 
+import asyncio
 import re
+import struct
 from dataclasses import dataclass
 from urllib.parse import quote
 
@@ -58,6 +60,8 @@ class PS3Status:
 #   BD info: SONY    PS-SYSTEM   310R8048   <hr>...NOR Firmware: ...
 #   MAC Addr : 28:0D:FC:73:D0:A2 - 192.168.31.88 WLAN
 #   webMAN 1.47.48n MOD - ...
+_RE_GAME_FOLDER = re.compile(r"/mount\.ps3/dev_hdd0/game/([A-Za-z0-9_]+)")
+
 _RE_TEMP = re.compile(r"(\d+(?:\.\d+)?)\s*°C")
 _RE_FAN = re.compile(r"FAN:\s*(\d+)\s*%", re.IGNORECASE)
 _RE_FW = re.compile(r"Firmware:\s*([^<\n]+)", re.IGNORECASE)
@@ -140,6 +144,55 @@ def parse_cpursx(html: str) -> PS3Status:
     return status
 
 
+def parse_sfo(data: bytes) -> dict[str, str]:
+    """Parse a PSF (PARAM.SFO) binary and return string-type key/value pairs.
+
+    Only formats 0x0204 (UTF-8 string) and 0x0004 (special string) are decoded.
+    Any parsing error returns an empty dict.
+    """
+    try:
+        if data[:4] != b"\x00PSF":
+            return {}
+        key_table_start = struct.unpack_from("<I", data, 0x08)[0]
+        data_table_start = struct.unpack_from("<I", data, 0x0C)[0]
+        num_entries = struct.unpack_from("<I", data, 0x10)[0]
+        result: dict[str, str] = {}
+        for i in range(num_entries):
+            off = 0x14 + i * 16
+            key_offset, data_fmt, data_len, _data_max_len, data_offset = (
+                struct.unpack_from("<HHIII", data, off)
+            )
+            if data_fmt not in (0x0204, 0x0004):
+                continue
+            # Decode key (NUL-terminated string)
+            key_start = key_table_start + key_offset
+            nul = data.index(b"\x00", key_start)
+            key = data[key_start:nul].decode("utf-8", "replace")
+            # Decode value
+            val_start = data_table_start + data_offset
+            val = (
+                data[val_start : val_start + data_len]
+                .decode("utf-8", "replace")
+                .rstrip("\x00")
+            )
+            result[key] = val
+        return result
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def parse_game_folders(html: str) -> list[str]:
+    """Extract unique game folder names from the /dev_hdd0/game listing HTML."""
+    seen: set[str] = set()
+    folders: list[str] = []
+    for m in _RE_GAME_FOLDER.finditer(html):
+        folder = m.group(1)
+        if folder not in seen:
+            seen.add(folder)
+            folders.append(folder)
+    return folders
+
+
 class WebManClient:
     """Talks to the webMAN MOD HTTP server on the PS3."""
 
@@ -195,6 +248,54 @@ class WebManClient:
             status.console_type = value
             status.cobra = "COBRA" in value.upper()
         return status
+
+    async def _get_bytes(self, path: str) -> bytes:
+        """Like _get but returns raw bytes (for binary files such as PARAM.SFO)."""
+        url = f"{self._base}{path}"
+        try:
+            async with async_timeout.timeout(HTTP_TIMEOUT):
+                resp = await self._session.get(url)
+                resp.raise_for_status()
+                return await resp.read()
+        except (aiohttp.ClientError, TimeoutError) as err:
+            raise PS3ConnectionError(str(err)) from err
+
+    async def async_get_game_folders(self) -> list[str]:
+        """Fetch /dev_hdd0/game listing and return folder names."""
+        html = await self._get("/dev_hdd0/game")
+        return parse_game_folders(html)
+
+    async def async_get_game(self, folder: str) -> dict | None:
+        """Fetch and parse PARAM.SFO for a single game folder.
+
+        Returns a game dict or None if the folder has no valid game data.
+        """
+        try:
+            data = await self._get_bytes(f"/dev_hdd0/game/{folder}/PARAM.SFO")
+        except PS3ConnectionError:
+            return None
+        sfo = parse_sfo(data)
+        if not sfo.get("TITLE"):
+            return None
+        if sfo.get("CATEGORY") == "GD":
+            return None
+        return {
+            "title_id": sfo.get("TITLE_ID", folder),
+            "name": sfo["TITLE"],
+            "category": sfo.get("CATEGORY", ""),
+            "path": f"/dev_hdd0/game/{folder}",
+        }
+
+    async def async_get_games(self) -> list[dict]:
+        """Return the list of installed games sorted by name (case-insensitive)."""
+        folders = await self.async_get_game_folders()
+        results = await asyncio.gather(
+            *[self.async_get_game(f) for f in folders],
+            return_exceptions=True,
+        )
+        games = [r for r in results if isinstance(r, dict)]
+        games.sort(key=lambda g: g["name"].lower())
+        return games
 
     async def async_command(self, path: str) -> None:
         """Fire a webMAN web command (fire-and-forget GET)."""

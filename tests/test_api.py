@@ -9,6 +9,8 @@ from custom_components.ps3_goldenhen.api import (
     PS3ConnectionError,
     WebManClient,
     parse_cpursx,
+    parse_game_folders,
+    parse_sfo,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -31,6 +33,10 @@ def _make_resp(text: str) -> MagicMock:
 
 def _read(name: str) -> str:
     return (FIXTURES / name).read_text(encoding="utf-8", errors="replace")
+
+
+def _read_bytes(name: str) -> bytes:
+    return (FIXTURES / name).read_bytes()
 
 
 def test_parse_cpursx_real_ingame_fixture():
@@ -142,3 +148,82 @@ async def test_client_console_type_and_bg_url_absolutised():
     assert status.cobra is True
     assert status.game_icon_url == "http://1.2.3.4:80/dev_hdd0/game//NPUA80637/ICON0.PNG"
     assert status.game_bg_url == "http://1.2.3.4:80/dev_hdd0/game//NPUA80637/PIC1.PNG"
+
+
+# ---------------------------------------------------------------------------
+# v0.3.0: PARAM.SFO parser
+# ---------------------------------------------------------------------------
+
+
+def test_parse_sfo_real_fixture():
+    """Parse the real NPUA80637 PARAM.SFO fixture."""
+    sfo = parse_sfo(_read_bytes("param_npua80637.sfo"))
+    assert sfo["TITLE"].startswith("God of War")
+    assert "Chains of Olympus" in sfo["TITLE"]
+    assert sfo["TITLE_ID"] == "NPUA80637"
+    assert sfo["CATEGORY"] == "HG"
+
+
+def test_parse_sfo_invalid_magic_returns_empty():
+    assert parse_sfo(b"INVALID_MAGIC") == {}
+
+
+def test_parse_sfo_empty_bytes_returns_empty():
+    assert parse_sfo(b"") == {}
+
+
+# ---------------------------------------------------------------------------
+# v0.3.0: parse_game_folders
+# ---------------------------------------------------------------------------
+
+
+def test_parse_game_folders_from_fixture():
+    """All folders are found in the real listing fixture."""
+    html = _read("devhdd0_game_listing.html")
+    folders = parse_game_folders(html)
+    assert "NPUA80637" in folders
+    assert "FILEMANAG" in folders
+    # No duplicates
+    assert len(folders) == len(set(folders))
+
+
+# ---------------------------------------------------------------------------
+# v0.3.0: async_get_games integration test
+# ---------------------------------------------------------------------------
+
+
+def _make_bytes_resp(data: bytes) -> MagicMock:
+    """Build a fake aiohttp response that returns bytes via resp.read()."""
+    resp = MagicMock()
+    resp.raise_for_status = MagicMock()
+    resp.read = AsyncMock(return_value=data)
+    return resp
+
+
+@pytest.mark.asyncio
+async def test_async_get_games_returns_game_list():
+    """async_get_games fetches the listing then each PARAM.SFO."""
+    listing_html = _read("devhdd0_game_listing.html")
+    sfo_bytes = _read_bytes("param_npua80637.sfo")
+
+    # First call → listing (text), subsequent calls → PARAM.SFO (bytes)
+    listing_resp = _make_resp(listing_html)
+
+    # We need to build bytes responses for every folder found in the listing.
+    # For simplicity, every folder returns the same NPUA80637 SFO so all
+    # results will have TITLE and CATEGORY=="HG" (not "GD") and will survive.
+    folders = parse_game_folders(listing_html)
+    sfo_resps = [_make_bytes_resp(sfo_bytes) for _ in folders]
+
+    session = MagicMock()
+    session.get = AsyncMock(side_effect=[listing_resp] + sfo_resps)
+
+    client = WebManClient(session, "1.2.3.4", 80)
+    games = await client.async_get_games()
+
+    assert len(games) > 0
+    names = [g["name"] for g in games]
+    # All games carry the real SFO title (same fixture repeated)
+    assert any("God of War" in n for n in names)
+    paths = [g["path"] for g in games]
+    assert "/dev_hdd0/game/NPUA80637" in paths

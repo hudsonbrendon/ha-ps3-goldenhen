@@ -1,4 +1,4 @@
-"""Tests for select entities (fan mode select)."""
+"""Tests for select entities (fan mode select, game launcher)."""
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -10,6 +10,7 @@ from custom_components.ps3_goldenhen.api import PS3Status
 from custom_components.ps3_goldenhen.const import CMD_FAN_AUTO, CMD_FAN_MANUAL, DOMAIN
 
 ENTITY_ID = "select.ps3_fan_mode"
+LAUNCHER_ENTITY_ID = "select.ps3_game_launcher"
 
 
 async def _setup(hass):
@@ -61,3 +62,37 @@ async def test_select_dynamic_sends_cmd_fan_auto(hass):
         blocking=True,
     )
     coordinator.client.async_command.assert_awaited_with(CMD_FAN_AUTO)
+
+
+@pytest.mark.asyncio
+async def test_game_launcher_select_option_sends_play_command(hass):
+    """Selecting a game name sends /play.ps3<path> command."""
+    entry = await _setup(hass)
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator.client.async_command = AsyncMock()
+
+    # Populate game list manually
+    game = {
+        "name": "God of War: Chains of Olympus (Digital)",
+        "title_id": "NPUA80637",
+        "path": "/dev_hdd0/game/NPUA80637",
+        "category": "HG",
+    }
+    coordinator.games = [game]
+    # Notify listeners without hitting the real network
+    coordinator.async_update_listeners()
+    await hass.async_block_till_done()
+
+    state = hass.states.get(LAUNCHER_ENTITY_ID)
+    assert state is not None, f"{LAUNCHER_ENTITY_ID} not found"
+    print(f"entity_id: {LAUNCHER_ENTITY_ID}, state: {state.state}")
+
+    await hass.services.async_call(
+        "select",
+        SERVICE_SELECT_OPTION,
+        {ATTR_ENTITY_ID: LAUNCHER_ENTITY_ID, ATTR_OPTION: game["name"]},
+        blocking=True,
+    )
+    coordinator.client.async_command.assert_awaited_with(
+        "/play.ps3/dev_hdd0/game/NPUA80637"
+    )

@@ -60,7 +60,8 @@
       "fan_target_temp": { "name": "Temperatura objetivo del ventilador" }
     },
     "select": {
-      "fan_mode_select": { "name": "Modo del ventilador" }
+      "fan_mode_select": { "name": "Modo del ventilador" },
+      "game_launcher": { "name": "Lanzador de juegos" }
     },
     "button": {
       "restart": { "name": "Reiniciar" },
