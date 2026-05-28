@@ -79,9 +79,15 @@ class PS3MediaPlayer(PS3Entity, MediaPlayerEntity):
         data = self.coordinator.data
         if data is None:
             return None
-        game_title = data.game_title
-        if game_title and game_title in self.source_list:
-            return game_title
+        # Prefer matching the running game by its title ID (reliable), then fall
+        # back to the display title. Either way the result is a name from the
+        # games list (or None), never an out-of-list value.
+        if data.game_title_id:
+            for game in self.coordinator.games:
+                if game["title_id"] == data.game_title_id:
+                    return game["name"]
+        if data.game_title and data.game_title in self.source_list:
+            return data.game_title
         return None
 
     async def async_select_source(self, source: str) -> None:

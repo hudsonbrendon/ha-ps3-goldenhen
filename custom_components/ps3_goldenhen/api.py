@@ -289,8 +289,17 @@ class WebManClient:
     async def async_get_games(self) -> list[dict]:
         """Return the list of installed games sorted by name (case-insensitive)."""
         folders = await self.async_get_game_folders()
+        # Cap concurrency: the webMAN HTTP server is single-threaded, so firing
+        # one PARAM.SFO request per folder at once would swamp it on a console
+        # with many games.
+        sem = asyncio.Semaphore(8)
+
+        async def _one(folder: str) -> dict | None:
+            async with sem:
+                return await self.async_get_game(folder)
+
         results = await asyncio.gather(
-            *[self.async_get_game(f) for f in folders],
+            *[_one(f) for f in folders],
             return_exceptions=True,
         )
         games = [r for r in results if isinstance(r, dict)]

@@ -76,10 +76,13 @@ class PS3GameLauncher(PS3Entity, SelectEntity):
         data = self.coordinator.data
         if data is None:
             return None
-        game_title = data.game_title
-        opts = self.options
-        if game_title and game_title in opts:
-            return game_title
+        # Match the running game by title ID (reliable), else by display title.
+        if data.game_title_id:
+            for game in self.coordinator.games:
+                if game["title_id"] == data.game_title_id:
+                    return game["name"]
+        if data.game_title and data.game_title in self.options:
+            return data.game_title
         return None
 
     @property
