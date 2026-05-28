@@ -55,13 +55,28 @@
     "switch": {
       "fan_auto": { "name": "Fan auto" }
     },
+    "number": {
+      "fan_speed": { "name": "Fan speed" },
+      "fan_target_temp": { "name": "Fan target temperature" }
+    },
+    "select": {
+      "fan_mode_select": { "name": "Fan mode" }
+    },
     "button": {
       "restart": { "name": "Restart" },
       "soft_reboot": { "name": "Soft reboot" },
       "hard_reboot": { "name": "Hard reboot" },
       "shutdown": { "name": "Shutdown" },
       "eject": { "name": "Eject disc" },
-      "insert": { "name": "Insert disc" }
+      "insert": { "name": "Insert disc" },
+      "quick_reboot": { "name": "Quick reboot" },
+      "fan_up": { "name": "Fan +" },
+      "fan_down": { "name": "Fan −" },
+      "refresh_games": { "name": "Refresh games" },
+      "unmount": { "name": "Unmount game" },
+      "beep1": { "name": "Beep" },
+      "beep2": { "name": "Beep ×2" },
+      "beep3": { "name": "Beep ×3" }
     },
     "image": {
       "game_cover": { "name": "Game cover" }

@@ -55,13 +55,28 @@
     "switch": {
       "fan_auto": { "name": "Ventilador automático" }
     },
+    "number": {
+      "fan_speed": { "name": "Velocidad del ventilador" },
+      "fan_target_temp": { "name": "Temperatura objetivo del ventilador" }
+    },
+    "select": {
+      "fan_mode_select": { "name": "Modo del ventilador" }
+    },
     "button": {
       "restart": { "name": "Reiniciar" },
       "soft_reboot": { "name": "Reinicio suave" },
       "hard_reboot": { "name": "Reinicio forzado" },
       "shutdown": { "name": "Apagar" },
       "eject": { "name": "Expulsar disco" },
-      "insert": { "name": "Insertar disco" }
+      "insert": { "name": "Insertar disco" },
+      "quick_reboot": { "name": "Reinicio rápido" },
+      "fan_up": { "name": "Ventilador +" },
+      "fan_down": { "name": "Ventilador −" },
+      "refresh_games": { "name": "Actualizar juegos" },
+      "unmount": { "name": "Desmontar juego" },
+      "beep1": { "name": "Bip" },
+      "beep2": { "name": "Bip ×2" },
+      "beep3": { "name": "Bip ×3" }
     },
     "image": {
       "game_cover": { "name": "Carátula del juego" }

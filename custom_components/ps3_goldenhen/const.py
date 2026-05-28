@@ -26,6 +26,11 @@ CMD_POPUP = "/popup.ps3"
 CMD_BEEP = "/beep.ps3?{n}"
 CMD_PLAY = "/play.ps3"
 CMD_MOUNT = "/mount.ps3"
+CMD_REFRESH = "/refresh.ps3"
+CMD_UNMOUNT = "/mount.ps3/unmount"
+CMD_FAN_UP = "/cpursx.ps3?up"
+CMD_FAN_DOWN = "/cpursx.ps3?dn"
+CMD_FAN_TARGET = "/cpursx.ps3?max={temp}"
 
 # Fan modes (rótulos internos)
 FAN_MODE_AUTO = "auto"

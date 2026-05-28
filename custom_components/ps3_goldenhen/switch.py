@@ -1,4 +1,4 @@
-"""Fan-mode switch (optimistic) for PS3 GoldenHEN."""
+"""Fan-mode switch (optimistic + coordinator sync) for PS3 GoldenHEN."""
 from __future__ import annotations
 
 from typing import Any
@@ -22,7 +22,10 @@ async def async_setup_entry(
 
 
 class PS3FanModeSwitch(PS3Entity, SwitchEntity):
-    """ON = fan automático (dinâmico); OFF = fan manual. Estado otimista."""
+    """ON = fan automático (dinâmico); OFF = fan manual.
+
+    Optimistic on action; syncs real state from coordinator polls.
+    """
 
     _attr_translation_key = "fan_auto"
     _attr_icon = "mdi:fan-auto"
@@ -31,6 +34,16 @@ class PS3FanModeSwitch(PS3Entity, SwitchEntity):
         super().__init__(coordinator, entry)
         self._attr_unique_id = f"{entry.entry_id}_fan_auto"
         self._attr_is_on = True  # webMAN inicia em modo dinâmico por padrão
+
+    def _handle_coordinator_update(self) -> None:
+        """Sync is_on from the latest poll result, then notify HA."""
+        data = self.coordinator.data
+        if data is not None:
+            fan_mode = data.fan_mode
+            if fan_mode is not None:
+                # "Manual" → OFF (fan controlled manually); anything else → ON (auto)
+                self._attr_is_on = fan_mode != "Manual"
+        super()._handle_coordinator_update()
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self.coordinator.client.async_command(CMD_FAN_AUTO)

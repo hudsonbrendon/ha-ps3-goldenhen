@@ -9,6 +9,8 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from custom_components.ps3_goldenhen.api import PS3Status
 from custom_components.ps3_goldenhen.const import CMD_FAN_AUTO, CMD_FAN_MANUAL, DOMAIN
 
+ENTITY_ID = "switch.ps3_fan_auto"
+
 
 async def _setup(hass):
     entry = MockConfigEntry(
@@ -32,14 +34,35 @@ async def test_fan_switch_on_off(hass):
 
     await hass.services.async_call(
         "switch", SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: "switch.ps3_fan_auto"}, blocking=True,
+        {ATTR_ENTITY_ID: ENTITY_ID}, blocking=True,
     )
     coordinator.client.async_command.assert_awaited_with(CMD_FAN_AUTO)
-    assert hass.states.get("switch.ps3_fan_auto").state == "on"
+    assert hass.states.get(ENTITY_ID).state == "on"
 
     await hass.services.async_call(
         "switch", SERVICE_TURN_OFF,
-        {ATTR_ENTITY_ID: "switch.ps3_fan_auto"}, blocking=True,
+        {ATTR_ENTITY_ID: ENTITY_ID}, blocking=True,
     )
     coordinator.client.async_command.assert_awaited_with(CMD_FAN_MANUAL)
-    assert hass.states.get("switch.ps3_fan_auto").state == "off"
+    assert hass.states.get(ENTITY_ID).state == "off"
+
+
+@pytest.mark.asyncio
+async def test_fan_switch_syncs_from_coordinator(hass):
+    """Poll with fan_mode='Manual' → switch off; 'Dynamic' → switch on."""
+    entry = await _setup(hass)
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+
+    # Simulate a poll returning Manual → switch should go OFF
+    coordinator.async_set_updated_data(PS3Status(online=True, fan_mode="Manual"))
+    await hass.async_block_till_done()
+    assert hass.states.get(ENTITY_ID).state == "off", (
+        f"Expected off after Manual poll, got {hass.states.get(ENTITY_ID).state}"
+    )
+
+    # Simulate a poll returning Dynamic → switch should go ON
+    coordinator.async_set_updated_data(PS3Status(online=True, fan_mode="Dynamic"))
+    await hass.async_block_till_done()
+    assert hass.states.get(ENTITY_ID).state == "on", (
+        f"Expected on after Dynamic poll, got {hass.states.get(ENTITY_ID).state}"
+    )
