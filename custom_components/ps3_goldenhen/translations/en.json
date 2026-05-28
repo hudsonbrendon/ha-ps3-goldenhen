@@ -35,6 +35,7 @@
       "rsx_temp": { "name": "RSX temperature" },
       "fan_speed": { "name": "Fan speed" },
       "free_memory": { "name": "Free memory" },
+      "hdd_free": { "name": "Free disk space" },
       "firmware": { "name": "Firmware" },
       "game_title": { "name": "Current game" }
     },

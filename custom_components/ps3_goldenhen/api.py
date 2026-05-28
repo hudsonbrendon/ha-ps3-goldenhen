@@ -23,19 +23,26 @@ class PS3Status:
     rsx_temp: float | None = None
     fan_speed: int | None = None
     firmware: str | None = None
-    free_memory: int | None = None  # MB
+    free_memory: int | None = None  # KB (webMAN reports "MEM: N KB")
+    hdd_free: float | None = None  # GB (webMAN reports "HDD: N GB Livres")
     game_title: str | None = None
-    game_icon_url: str | None = None
+    game_icon_url: str | None = None  # relative path; absolutised by WebManClient
     raw: str = ""
 
 
-# Regex defensivos — alvo são tokens estáveis do webMAN MOD.
-# Normalizamos &deg; -> ° antes de aplicar.
+# Regexes anchored to the real webMAN MOD /cpursx.ps3 markup. Examples:
+#   CPU: 49°C [FAN: 34% Manual] RSX: 58°C
+#   <a href="/games.ps3">MEM: 1,204 KB </a><br><a href="/dev_hdd0">HDD: 391.0 GB Livres
+#   NOR Firmware: 4.91 CEX PS3HEN 3.3.0<br>
+#   <a href="http://google.com/search?q=God of War®: ...">God of War®: ... 01.00</a>
+#   <img src="/dev_hdd0/game//NPUA80637/ICON0.PNG" ...>
 _RE_TEMP = re.compile(r"(\d+(?:\.\d+)?)\s*°C")
-_RE_FAN = re.compile(r"(\d+)\s*%")
-_RE_FW = re.compile(r"\b(\d\.\d{2})\b")
-_RE_MEM = re.compile(r"(\d+)\s*MB", re.IGNORECASE)
-_RE_GAME = re.compile(r"Game:\s*(.+?)\s*<", re.IGNORECASE)
+_RE_FAN = re.compile(r"FAN:\s*(\d+)\s*%", re.IGNORECASE)
+_RE_FW = re.compile(r"Firmware:\s*([^<\n]+)", re.IGNORECASE)
+_RE_MEM = re.compile(r"MEM:\s*([\d,]+)\s*KB", re.IGNORECASE)
+_RE_HDD = re.compile(r"HDD:\s*([\d.]+)\s*GB", re.IGNORECASE)
+_RE_GAME = re.compile(r'search\?q=([^"]+)"')
+_RE_ICON = re.compile(r'(/dev_hdd0/[^"]*?ICON0\.PNG)', re.IGNORECASE)
 
 
 def parse_cpursx(html: str) -> PS3Status:
@@ -52,12 +59,16 @@ def parse_cpursx(html: str) -> PS3Status:
     if (m := _RE_FAN.search(text)) is not None:
         status.fan_speed = int(m.group(1))
     if (m := _RE_FW.search(text)) is not None:
-        status.firmware = m.group(1)
+        status.firmware = m.group(1).strip()
     if (m := _RE_MEM.search(text)) is not None:
-        status.free_memory = int(m.group(1))
+        status.free_memory = int(m.group(1).replace(",", ""))
+    if (m := _RE_HDD.search(text)) is not None:
+        status.hdd_free = float(m.group(1))
     if (m := _RE_GAME.search(text)) is not None:
         title = m.group(1).strip()
-        status.game_title = None if title.upper() == "XMB" else title
+        status.game_title = None if not title or title.upper() == "XMB" else title
+    if (m := _RE_ICON.search(text)) is not None:
+        status.game_icon_url = m.group(1)
 
     return status
 
@@ -90,7 +101,10 @@ class WebManClient:
 
     async def async_get_status(self) -> PS3Status:
         """Fetch and parse /cpursx.ps3."""
-        return parse_cpursx(await self._get(CMD_STATUS))
+        status = parse_cpursx(await self._get(CMD_STATUS))
+        if status.game_icon_url and status.game_icon_url.startswith("/"):
+            status.game_icon_url = f"{self._base}{status.game_icon_url}"
+        return status
 
     async def async_command(self, path: str) -> None:
         """Fire a webMAN web command (fire-and-forget GET)."""
