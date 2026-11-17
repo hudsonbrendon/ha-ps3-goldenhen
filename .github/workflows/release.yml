@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - custom_components/ps3_goldenhen/manifest.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read manifest version
+        id: version
+        run: echo "version=$(jq -r .version custom_components/ps3_goldenhen/manifest.json)" >> "$GITHUB_OUTPUT"
+      - name: Zip integration
+        run: cd custom_components/ps3_goldenhen && zip -r "$GITHUB_WORKSPACE/ps3_goldenhen.zip" . -x '__pycache__/*'
+      - name: Create release when the version is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ steps.version.outputs.version }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "$TAG already released"
+          else
+            gh release create "$TAG" "ps3_goldenhen.zip" --title "$TAG" --generate-notes
+          fi

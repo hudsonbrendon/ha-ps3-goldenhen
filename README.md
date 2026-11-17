@@ -1,4 +1,18 @@
 <p align="center">
+  <img src="custom_components/ps3_goldenhen/brand/logo@2x.png" alt="PS3 GoldenHEN" height="128">
+</p>
+
+# PS3 GoldenHEN
+
+[![Tests](https://github.com/hudsonbrendon/ha-ps3-goldenhen/actions/workflows/tests.yml/badge.svg)](https://github.com/hudsonbrendon/ha-ps3-goldenhen/actions/workflows/tests.yml)
+[![Hassfest](https://github.com/hudsonbrendon/ha-ps3-goldenhen/actions/workflows/hassfest.yml/badge.svg)](https://github.com/hudsonbrendon/ha-ps3-goldenhen/actions/workflows/hassfest.yml)
+[![HACS](https://github.com/hudsonbrendon/ha-ps3-goldenhen/actions/workflows/validate.yml/badge.svg)](https://github.com/hudsonbrendon/ha-ps3-goldenhen/actions/workflows/validate.yml)
+[![Release](https://img.shields.io/github/v/release/hudsonbrendon/ha-ps3-goldenhen?sort=semver)](https://github.com/hudsonbrendon/ha-ps3-goldenhen/releases)
+[![Downloads](https://img.shields.io/github/downloads/hudsonbrendon/ha-ps3-goldenhen/total)](https://github.com/hudsonbrendon/ha-ps3-goldenhen/releases)
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/)
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.12.0%2B-18BCF2?logo=homeassistant&logoColor=white)](https://www.home-assistant.io/)
+[![License](https://img.shields.io/github/license/hudsonbrendon/ha-ps3-goldenhen)](LICENSE)
+
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="custom_components/ps3_goldenhen/brand/dark_logo.png">
     <img src="custom_components/ps3_goldenhen/brand/logo.png" alt="PlayStation 3" width="420">
