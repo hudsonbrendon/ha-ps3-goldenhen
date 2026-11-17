@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from urllib.parse import quote
 
 import aiohttp
-import async_timeout
 
 from .const import CMD_STATUS, HTTP_TIMEOUT
 
@@ -212,7 +211,7 @@ class WebManClient:
     async def _get(self, path: str) -> str:
         url = f"{self._base}{path}"
         try:
-            async with async_timeout.timeout(HTTP_TIMEOUT):
+            async with asyncio.timeout(HTTP_TIMEOUT):
                 resp = await self._session.get(url)
                 resp.raise_for_status()
                 return await resp.text()
@@ -253,7 +252,7 @@ class WebManClient:
         """Like _get but returns raw bytes (for binary files such as PARAM.SFO)."""
         url = f"{self._base}{path}"
         try:
-            async with async_timeout.timeout(HTTP_TIMEOUT):
+            async with asyncio.timeout(HTTP_TIMEOUT):
                 resp = await self._session.get(url)
                 resp.raise_for_status()
                 return await resp.read()
